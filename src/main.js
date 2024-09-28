@@ -2,10 +2,11 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import 'jquery';
 
-// Importar Bootstrap CSS (si lo estás usando)
-import 'bootstrap/dist/css/bootstrap.min.css';
 
+import 'bootstrap/dist/css/bootstrap.min.css'; // Importa los estilos de Bootstrap
+import 'bootstrap'; // Importa el JavaScript de Bootstrap
 // Crear la aplicación Vue
 const app = createApp(App);
 

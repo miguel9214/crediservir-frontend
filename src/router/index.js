@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import About from '../views/About.vue';
-import AdminPanel from '../components/AdminPanel.vue';
 import EventForm from '../components/EventForm.vue';
 import AttendeeForm from '../components/AttendeeForm.vue';
 import Login from '../components/Login.vue';
 import Register from '../components/Register.vue';
+import CategoryForm from '@/components/CategoryForm.vue'; // 
 
 const routes = [
   {
@@ -27,15 +27,10 @@ const routes = [
     name: 'register',
     component: Register,
   },
+
   {
-    path: '/admin',
-    name: 'admin',
-    component: AdminPanel,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/events/new',
-    name: 'new-event',
+    path: '/events',
+    name: 'events',
     component: EventForm,
     meta: { requiresAuth: true },
   },
@@ -45,6 +40,13 @@ const routes = [
     component: AttendeeForm,
     meta: { requiresAuth: true },
   },
+  {
+    path: '/categories', // Ruta para crear una nueva categoría
+    name: 'categories',
+    component: CategoryForm,
+    meta: { requiresAuth: true }, // Si necesitas autenticación
+  },
+  
   {
     path: '/about',
     name: 'about',
@@ -58,14 +60,14 @@ const router = createRouter({
 });
 
 // En tu archivo de configuración del router
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('access_token') !== null; // Verifica si hay un token almacenado
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'login' }); // Redirige a la página de inicio de sesión si no está autenticado
-  } else {
-    next(); // Continúa a la ruta solicitada
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   const isAuthenticated = localStorage.getItem('access_token') !== null; // Verifica si hay un token almacenado
+//   if (to.meta.requiresAuth && !isAuthenticated) {
+//     next({ name: 'login' }); // Redirige a la página de inicio de sesión si no está autenticado
+//   } else {
+//     next(); // Continúa a la ruta solicitada
+//   }
+// });
 
 
 export default router;
