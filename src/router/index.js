@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import About from '../views/About.vue';
 import AdminPanel from '../components/AdminPanel.vue';
@@ -16,6 +16,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login,
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: Home,
   },
   {
     path: '/register',
@@ -52,13 +57,15 @@ const router = createRouter({
   routes
 });
 
+// En tu archivo de configuración del router
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = false; // Cambia esto según tu lógica de autenticación
+  const isAuthenticated = localStorage.getItem('access_token') !== null; // Verifica si hay un token almacenado
   if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'login' });
+    next({ name: 'login' }); // Redirige a la página de inicio de sesión si no está autenticado
   } else {
-    next();
+    next(); // Continúa a la ruta solicitada
   }
 });
+
 
 export default router;

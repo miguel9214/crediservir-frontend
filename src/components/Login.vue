@@ -24,7 +24,6 @@
 
 <script>
 import axios from 'axios';
-import { mapActions } from 'vuex'; // Si usas Vuex para manejar el estado (opcional)
 
 export default {
   data() {
