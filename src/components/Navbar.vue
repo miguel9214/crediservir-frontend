@@ -14,7 +14,7 @@
               <router-link class="nav-link" to="/events">Events</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/attendees/new">New Attendee</router-link>
+              <router-link class="nav-link" to="/attendees">Attendees</router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/categories">Categories</router-link>

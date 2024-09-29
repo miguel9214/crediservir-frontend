@@ -35,8 +35,8 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/attendees/new',
-    name: 'new-attendee',
+    path: '/attendees',
+    name: 'attendees',
     component: AttendeeForm,
     meta: { requiresAuth: true },
   },

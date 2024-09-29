@@ -46,8 +46,8 @@ export default {
         // Almacenar el token (si lo necesitas)
         localStorage.setItem('access_token', response.data.access_token);
         
-        // Redirigir a la ruta /admin
-        this.$router.push('/admin');
+        // Redirigir a la ruta /home
+        this.$router.push('/home');
       } catch (error) {
         console.error('Error logging in', error);
         // Establecer el mensaje de error
