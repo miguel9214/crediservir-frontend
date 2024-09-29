@@ -23,9 +23,8 @@
               <router-link class="nav-link" to="/categories">Categories</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/about">About</router-link>
+              <router-link class="nav-link" to="/discounts">Descounts code</router-link>
             </li>
-
           </ul>
         </div>
       </div>

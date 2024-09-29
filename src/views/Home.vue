@@ -8,42 +8,59 @@
     <div class="row mt-4">
       <div class="col-md-4">
         <div class="card">
-          <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Gestión de Eventos" />
+          <img
+            src="../assets/tickets.jpg"
+            class="card-img-top"
+            alt="Gestión de Eventos"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Comprar Tickect</h5>
+            <p class="card-text">
+              Disfruta de los mejores eventos y vive las mejores expericiancias.
+              Que esperas para comprar tu entrada!
+            </p>
+            <router-link to="/events" class="btn btn-primary"
+              >Comprar</router-link
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <img
+            src="../assets/events.jpg"
+            class="card-img-top"
+            alt="Gestión de Eventos"
+          />
           <div class="card-body">
             <h5 class="card-title">Gestión de Eventos</h5>
             <p class="card-text">
-              Organiza y gestiona tus eventos de manera sencilla. Crea, edita y elimina eventos
-              con solo unos clics.
+              Organiza y gestiona tus eventos de manera sencilla. Crea, edita y
+              elimina eventos con solo unos clics.
             </p>
-            <router-link to="/events/new" class="btn btn-primary">Crear Evento</router-link>
+            <router-link to="/events" class="btn btn-primary"
+              >Crear Evento</router-link
+            >
           </div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="card">
-          <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Gestión de Asistentes" />
+          <img
+            src="../assets/attendee.jpg"
+            class="card-img-top"
+            alt="Gestión de Asistentes"
+          />
           <div class="card-body">
             <h5 class="card-title">Gestión de Asistentes</h5>
             <p class="card-text">
-              Administra la asistencia de los participantes en tus eventos. Mantén un control
-              efectivo y fácil de acceder.
+              Administra la asistencia de los participantes en tus eventos.
+              Mantén un control efectivo y fácil de acceder.
             </p>
-            <router-link to="/attendees/new" class="btn btn-primary">Registrar Asistente</router-link>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Acerca de Nosotros" />
-          <div class="card-body">
-            <h5 class="card-title">Acerca de Nosotros</h5>
-            <p class="card-text">
-              Descubre más sobre nuestra misión y cómo estamos ayudando a las comunidades a
-              organizar eventos exitosos.
-            </p>
-            <router-link to="/about" class="btn btn-primary">Leer Más</router-link>
+            <router-link to="/attendees" class="btn btn-primary"
+              >Registrar Asistente</router-link
+            >
           </div>
         </div>
       </div>
@@ -53,7 +70,7 @@
 
 <script>
 export default {
-  name: 'Home',
+  name: "Home",
 };
 </script>
 

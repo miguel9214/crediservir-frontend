@@ -91,6 +91,7 @@ export default {
       try {
         const response = await axios.get('http://crediservir-api.test/api/categories');
         this.categories = response.data;
+        console.log(this.categories);
       } catch (error) {
         console.error('Error fetching categories', error);
       }

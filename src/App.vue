@@ -2,13 +2,14 @@
   <div id="app">
     <!-- Mostrar el Navbar solo si la ruta actual no es /login o /register -->
     <Navbar v-if="!isAuthRoute" />
-    <router-view /> <!-- Este es el lugar donde se mostrarán los componentes de las rutas -->
+    <router-view /> <!-- Aquí se mostrarán los componentes de las rutas -->
   </div>
 </template>
 
 <script>
-import Navbar from './components/Navbar.vue'; // Asegúrate de que la ruta sea correcta
+import { useRoute } from 'vue-router';
 import { computed } from 'vue';
+import Navbar from './components/Navbar.vue'; // Asegúrate de que la ruta sea correcta
 
 export default {
   name: 'App',
@@ -16,9 +17,11 @@ export default {
     Navbar,
   },
   setup() {
+    const route = useRoute();
+
+    // Computed que revisa si la ruta actual es /login o /register
     const isAuthRoute = computed(() => {
-      const currentRoute = window.location.pathname;
-      return currentRoute === '/login' || currentRoute === '/register';
+      return route.path === '/login' || route.path === '/register';
     });
 
     return { isAuthRoute };
