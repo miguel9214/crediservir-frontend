@@ -12,7 +12,7 @@
       Crear Nuevo Asistente
     </button>
 
-    <table class="table table-hover table-responsive">
+    <table class="table table-striped table-responsive">
       <thead class="thead-dark">
         <tr>
           <th>#</th>

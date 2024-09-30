@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5">
-    <h2>Codigos de descuentos</h2>
+    <h2>Códigos de descuento</h2>
 
     <!-- Buscador -->
     <div class="mb-3">
@@ -8,22 +8,22 @@
         type="text"
         v-model="searchQuery"
         class="form-control"
-        placeholder="Buscar codigo por nombre..."
+        placeholder="Buscar código por nombre..."
       />
     </div>
 
-    <!-- Botón para abrir el modal de crear categoría -->
+    <!-- Botón para abrir el modal de crear código -->
     <button class="btn btn-success mb-3" @click="openModal">
-      Crear nuevo codigo
+      Crear nuevo código
     </button>
 
-    <!-- Tabla de categorías -->
-    <table class="table table-striped">
-      <thead>
+    <!-- Tabla de códigos -->
+    <table class="table table-striped table-responsive">
+      <thead class="thead-dark">
         <tr>
           <th>#</th>
-          <th>Codigo</th>
-          <th>Porcentaje de descueto</th>
+          <th>Código</th>
+          <th>Porcentaje de descuento</th>
           <th>Desde</th>
           <th>Hasta</th>
           <th>Estado</th>
@@ -34,11 +34,10 @@
         <tr v-for="(discount, index) in filteredDiscounts" :key="discount.id">
           <td>{{ index + 1 }}</td>
           <td>{{ discount.code }}</td>
-          <td>{{ discount.discount_percentage }}</td>
+          <td>{{ discount.discount_percentage }}%</td>
           <td>{{ discount.valid_from }}</td>
           <td>{{ discount.valid_until }}</td>
-          <td>{{ discount.status }}</td>
-
+          <td>{{ discount.status ? 'ACTIVO' : 'INACTIVO' }}</td>
           <td>
             <button
               class="btn btn-warning me-2"
@@ -54,7 +53,7 @@
       </tbody>
     </table>
 
-    <!-- Modal para crear/editar categorías -->
+    <!-- Modal para crear/editar código -->
     <div
       class="modal fade"
       id="discountModal"
@@ -66,9 +65,8 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="discountModalLabel">
-              {{ isEditing ? "Editar codigo" : "Crear codigo" }}
+              {{ isEditing ? "Editar código" : "Crear código" }}
             </h5>
-            <!-- El botón de cierre ya no tiene aria-hidden -->
             <button
               type="button"
               class="btn-close"
@@ -81,7 +79,7 @@
               @submit.prevent="isEditing ? updateDiscount() : createDiscount()"
             >
               <div class="mb-3">
-                <label for="Code" class="form-label">Nombre del codigo</label>
+                <label for="Code" class="form-label">Código</label>
                 <input
                   type="text"
                   id="Code"
@@ -89,9 +87,7 @@
                   class="form-control"
                   required
                 />
-                <label for="Percentage" class="form-label"
-                  >Porcentaje de descuento</label
-                >
+                <label for="Percentage" class="form-label">Porcentaje de descuento</label>
                 <input
                   type="number"
                   id="Percentage"
@@ -99,7 +95,7 @@
                   class="form-control"
                   required
                 />
-                <label for="ValidFrom" class="form-label">Valido desde</label>
+                <label for="ValidFrom" class="form-label">Válido desde</label>
                 <input
                   type="date"
                   id="ValidFrom"
@@ -107,7 +103,7 @@
                   class="form-control"
                   required
                 />
-                <label for="ValidUntil" class="form-label">Valido hasta</label>
+                <label for="ValidUntil" class="form-label">Válido hasta</label>
                 <input
                   type="date"
                   id="ValidUntil"
@@ -115,7 +111,6 @@
                   class="form-control"
                   required
                 />
-
                 <div class="mb-3">
                   <label for="Status" class="form-label">Estado</label>
                   <select v-model="Status" class="form-select" required>
@@ -143,23 +138,22 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
-      discounts: [], // Lista de categorías
-      Code:"",
+      discounts: [],
+      Code: "",
       Percentage: "",
       ValidFrom: "",
       ValidUntil: "",
-      Status: "", // Nombre de la categoría actual
-      isEditing: false, // Estado de si se está editando o creando
-      currentDiscountId: null, // ID de la categoría actual
-      searchQuery: "", // Texto de búsqueda para el filtro
+      Status: "1", // Por defecto, el estado es "ACTIVO"
+      isEditing: false,
+      currentDiscountId: null,
+      searchQuery: "",
     };
   },
   mounted() {
-    this.fetchDiscounts(); // Cargar categorías al montar el componente
+    this.fetchDiscounts();
   },
   computed: {
     filteredDiscounts() {
-      // Filtra las categorías según el texto de búsqueda
       return this.discounts.filter((discount) =>
         discount.code.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
@@ -177,8 +171,7 @@ export default {
       }
     },
     openModal() {
-      // Reinicia el formulario y abre el modal para crear una nueva categoría
-      this.discountName = "";
+      this.resetForm();
       this.isEditing = false;
       const modalElement = document.getElementById("discountModal");
       const modal = new Modal(modalElement);
@@ -189,26 +182,29 @@ export default {
         const response = await axios.post(
           "http://crediservir-api.test/api/discounts",
           {
-           code: this.Code,
-           discount_percentage:this.Percentage,
-           valid_from:this.ValidFrom,
-           valid_until: this.ValidUntil,
-           status:this.Status,
+            code: this.Code,
+            discount_percentage: this.Percentage,
+            valid_from: this.ValidFrom,
+            valid_until: this.ValidUntil,
+            status: this.Status,
           }
         );
-        this.discounts.push(response.data.discount); // Agrega la nueva categoría a la tabla
+        this.discounts.push(response.data.discount);
         this.closeModal();
-        Swal.fire("Éxito", "Codigo creada con éxito", "success");
+        Swal.fire("Éxito", "Código creado con éxito", "success");
       } catch (error) {
         console.error("Error creating code", error);
-        Swal.fire("Error", "No se pudo crear el codigo", "error");
+        Swal.fire("Error", "No se pudo crear el código", "error");
       }
     },
-    editDiscount(descount) {
-      // Llena el formulario con los datos de la categoría seleccionada para editar
-      this.discountName = descount.name;
+    editDiscount(discount) {
+      this.Code = discount.code;
+      this.Percentage = discount.discount_percentage;
+      this.ValidFrom = discount.valid_from;
+      this.ValidUntil = discount.valid_until;
+      this.Status = discount.status;
       this.isEditing = true;
-      this.currentDescountId = descount.id;
+      this.currentDiscountId = discount.id;
       const modalElement = document.getElementById("discountModal");
       const modal = new Modal(modalElement);
       modal.show();
@@ -216,26 +212,30 @@ export default {
     async updateDiscount() {
       try {
         const response = await axios.put(
-          `http://crediservir-api.test/api/discounts/${this.currentDescountId}`,
+          `http://crediservir-api.test/api/discounts/${this.currentDiscountId}`,
           {
-            name: this.descountName,
+            code: this.Code,
+            discount_percentage: this.Percentage,
+            valid_from: this.ValidFrom,
+            valid_until: this.ValidUntil,
+            status: this.Status,
           }
         );
-        const index = this.descounts.findIndex(
-          (c) => c.id === this.currentDescountId
+        const index = this.discounts.findIndex(
+          (c) => c.id === this.currentDiscountId
         );
-        this.discounts[index] = response.data.discount; // Actualiza la categoría en la tabla
+        this.discounts[index] = response.data.discount;
         this.closeModal();
-        Swal.fire("Éxito", "Codigo actualizado con éxito", "success");
+        Swal.fire("Éxito", "Código actualizado con éxito", "success");
       } catch (error) {
-        console.error("Error updating Code", error);
-        Swal.fire("Error", "No se pudo actualizar la categoría", "error");
+        console.error("Error updating code", error);
+        Swal.fire("Error", "No se pudo actualizar el código", "error");
       }
     },
     async deleteDiscount(id) {
       const result = await Swal.fire({
         title: "¿Estás seguro?",
-        text: "No podrás recuperar esta codigo después de eliminarlo.",
+        text: "No podrás recuperar este código después de eliminarlo.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, eliminar",
@@ -245,16 +245,22 @@ export default {
       if (result.isConfirmed) {
         try {
           await axios.delete(`http://crediservir-api.test/api/discounts/${id}`);
-          this.discounts = this.discounts.filter((c) => c.id !== id); // Elimina la categoría de la tabla
-          Swal.fire("Eliminado!", "El codigo ha sido eliminado.", "success");
+          this.discounts = this.discounts.filter((c) => c.id !== id);
+          Swal.fire("Eliminado!", "El código ha sido eliminado.", "success");
         } catch (error) {
           console.error("Error deleting code", error);
-          Swal.fire("Error", "No se pudo eliminar el codigo", "error");
+          Swal.fire("Error", "No se pudo eliminar el código", "error");
         }
       }
     },
+    resetForm() {
+      this.Code = "";
+      this.Percentage = "";
+      this.ValidFrom = "";
+      this.ValidUntil = "";
+      this.Status = "1";
+    },
     closeModal() {
-      // Cierra el modal
       const modalElement = document.getElementById("discountModal");
       const modal = Modal.getInstance(modalElement);
       modal.hide();
@@ -265,6 +271,27 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 800px;
+  max-width: 900px; /* Ajuste del ancho del contenedor */
 }
+
+.table {
+  background-color: #ffffff; /* Color de fondo de la tabla */
+  border-radius: 0.5rem; /* Bordes redondeados */
+  overflow: hidden; /* Esconde el desbordamiento */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.thead-dark th {
+  background-color: #343a40; /* Fondo oscuro para el encabezado */
+  color: white; /* Color de texto blanco */
+}
+
+.modal-content {
+  border-radius: 0.5rem; /* Bordes redondeados para el modal */
+}
+
+.btn {
+  transition: background-color 0.3s ease; /* Efecto de transición suave */
+}
+
 </style>
