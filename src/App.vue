@@ -2,9 +2,12 @@
   <div id="app">
     <!-- Mostrar el Navbar solo si la ruta actual no es /login o /register -->
     <Navbar v-if="!isAuthRoute" />
-    <div class="main-content">
+    <!-- Mostrar el main-content solo si la ruta actual no es /login o /register -->
+    <div class="main-content" v-if="!isAuthRoute">
       <router-view /> <!-- Aquí se mostrarán los componentes de las rutas -->
     </div>
+    <!-- Mostrar el contenido de las rutas de autenticación sin el main-content -->
+    <router-view v-if="isAuthRoute" />
   </div>
 </template>
 
@@ -36,6 +39,6 @@ export default {
 
 /* Estilo para el contenedor principal */
 .main-content {
-  padding-top: 70px; /* Ajusta este valor según la altura de tu navbar */
+  padding-top: 70px; 
 }
 </style>
