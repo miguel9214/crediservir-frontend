@@ -1,11 +1,11 @@
 <template>
   <div class="container mt-5">
-    <h2 class="mb-4">Compra de Boletos</h2>
+    <h2 class="mb-4 text-center">Compra de Boletos</h2>
 
     <!-- Selección del evento -->
     <div class="mb-3">
       <label for="eventSelect" class="form-label">Selecciona un evento:</label>
-      <select v-model="selectedEventId" id="eventSelect" class="form-select">
+      <select v-model="selectedEventId" id="eventSelect" class="form-select shadow-sm">
         <option v-for="event in events" :key="event.id" :value="event.id">
           {{ event.title }} - Capacidades restantes: {{ event.capacity }}
         </option>
@@ -13,21 +13,22 @@
     </div>
 
     <!-- Detalles del evento -->
-    <div v-if="selectedEvent" class="card mt-4">
+    <div v-if="selectedEvent" class="card mt-4 shadow-lg border-light">
       <div class="card-body">
-        <h3 class="card-title">Detalles del Evento</h3>
+        <h3 class="card-title text-primary">{{ selectedEvent.title }}</h3>
         <p class="card-text">
-          Título: <strong>{{ selectedEvent.title }}</strong>
+          <strong>Descripción:</strong> {{ selectedEvent.description }}
         </p>
-        <p class="card-text">Descripción: {{ selectedEvent.description }}</p>
-        <p class="card-text">Fecha: {{ selectedEvent.date }}</p>
-        <p class="card-text">Ubicación: {{ selectedEvent.location }}</p>
-        <p class="card-text">Precio Base: {{ selectedEvent.base_price }} USD</p>
+        <p class="card-text">
+          <strong>Fecha:</strong> {{ selectedEvent.date }}<br />
+          <strong>Ubicación:</strong> {{ selectedEvent.location }}<br />
+          <strong>Precio Base:</strong> <span class="text-success">{{ selectedEvent.base_price }} USD</span>
+        </p>
 
         <!-- Selección de asistente -->
         <div class="mb-3">
           <label for="attendeeSelect" class="form-label">Selecciona un asistente:</label>
-          <select v-model="selectedAttendeeId" id="attendeeSelect" class="form-select">
+          <select v-model="selectedAttendeeId" id="attendeeSelect" class="form-select shadow-sm">
             <option v-for="attendee in attendees" :key="attendee.id" :value="attendee.id">
               {{ attendee.name }} - {{ attendee.email }}
             </option>
@@ -37,7 +38,7 @@
         <!-- Selección de tipo de boleto -->
         <div class="mb-3">
           <label for="ticketType" class="form-label">Tipo de boleto:</label>
-          <select v-model="ticketType" id="ticketType" class="form-select" :disabled="isFreeTicket">
+          <select v-model="ticketType" id="ticketType" class="form-select shadow-sm" :disabled="isFreeTicket">
             <option value="free">Gratis</option>
             <option value="general">General</option>
             <option value="vip">VIP</option>
@@ -47,21 +48,21 @@
         <!-- Código de descuento -->
         <div class="mb-3">
           <label for="discountCode" class="form-label">Código de descuento (opcional):</label>
-          <input v-model="discountCode" type="text" id="discountCode" class="form-control" />
+          <input v-model="discountCode" type="text" id="discountCode" class="form-control shadow-sm" />
         </div>
 
         <!-- Resumen de compra -->
-        <div v-if="calculatedTotal !== null" class="mt-3">
+        <div v-if="calculatedTotal !== null" class="mt-3 border-top pt-3">
           <h5>Resumen de Compra</h5>
-          <p>Valor Base: {{ selectedEvent.base_price }} USD</p>
+          <p>Valor Base: <strong>{{ selectedEvent.base_price }} USD</strong></p>
           <p v-if="ticketType !== 'free'">
-            Valor Adicional: {{ additionalCost }} USD
+            Valor Adicional: <strong>{{ additionalCost }} USD</strong>
           </p>
-          <p>Total: {{ calculatedTotal }} USD</p>
+          <p><strong>Total: {{ calculatedTotal }} USD</strong></p>
         </div>
 
         <!-- Botón de compra -->
-        <button @click="purchaseTicket" class="btn btn-primary">
+        <button @click="purchaseTicket" class="btn btn-primary btn-lg mt-3 w-100">
           Comprar Boleto
         </button>
 
@@ -145,8 +146,7 @@ export default {
     calculateTotal() {
       if (!this.selectedEvent) return;
 
-      // Asegúrate de que base_price sea un número
-      const basePrice = parseFloat(this.selectedEvent.base_price); // Convertir a float
+      const basePrice = parseFloat(this.selectedEvent.base_price);
       if (isNaN(basePrice)) {
         this.calculatedTotal = null; // Restablecer total si basePrice es inválido
         return;
@@ -183,7 +183,7 @@ export default {
           Swal.fire("Error", "Código de descuento no válido", "error");
         }
       }
-      const basePrice = parseFloat(this.selectedEvent.base_price); // Asegúrate de convertir a float
+      const basePrice = parseFloat(this.selectedEvent.base_price);
       const additional = this.ticketType === "general" ? basePrice * 0.15 : this.ticketType === "vip" ? basePrice * 0.3 : 0;
       const discountedPrice = (basePrice + additional) * (1 - discount / 100);
       return discountedPrice;
@@ -195,7 +195,6 @@ export default {
       }
 
       try {
-        // Realiza la petición de compra de ticket
         const response = await axios.post(`http://crediservir-api.test/api/events/${this.selectedEventId}/purchase`, {
           attendee_id: this.selectedAttendeeId,
           ticket_type: this.ticketType,
@@ -218,6 +217,26 @@ export default {
 };
 </script>
 
-<style>
-/* Puedes agregar aquí los estilos personalizados para el componente */
+<style scoped>
+.container {
+  max-width: 800px;
+}
+
+.card {
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
 </style>
