@@ -8,22 +8,22 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/home">Home</router-link>
+            <router-link class="nav-link text-white" to="/home" @click.native="closeNavbar">Home</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/tickest">Purchase Tickets</router-link>
+            <router-link class="nav-link text-white" to="/tickest" @click.native="closeNavbar">Purchase Tickets</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/attendees">Attendees</router-link>
+            <router-link class="nav-link text-white" to="/attendees" @click.native="closeNavbar">Attendees</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/events">Events</router-link>
+            <router-link class="nav-link text-white" to="/events" @click.native="closeNavbar">Events</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/categories">Categories</router-link>
+            <router-link class="nav-link text-white" to="/categories" @click.native="closeNavbar">Categories</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/discounts">Discount Codes</router-link>
+            <router-link class="nav-link text-white" to="/discounts" @click.native="closeNavbar">Discount Codes</router-link>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">
@@ -43,6 +43,13 @@ export default {
     logout() {
       localStorage.removeItem('access_token');
       this.$router.push({ name: 'login' });
+    },
+    closeNavbar() {
+      // Cierra el navbar al hacer clic en un enlace
+      const navbar = document.getElementById('navbarNav');
+      if (navbar.classList.contains('show')) {
+        navbar.classList.remove('show');
+      }
     }
   }
 };
