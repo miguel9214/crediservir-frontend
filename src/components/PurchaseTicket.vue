@@ -5,7 +5,11 @@
     <!-- Selección del evento -->
     <div class="mb-3">
       <label for="eventSelect" class="form-label">Selecciona un evento:</label>
-      <select v-model="selectedEventId" id="eventSelect" class="form-select shadow-sm">
+      <select
+        v-model="selectedEventId"
+        id="eventSelect"
+        class="form-select shadow-sm"
+      >
         <option v-for="event in events" :key="event.id" :value="event.id">
           {{ event.title }} - Capacidades restantes: {{ event.capacity }}
         </option>
@@ -22,15 +26,26 @@
         <p class="card-text">
           <strong>Fecha:</strong> {{ selectedEvent.date }}<br />
           <strong>Ubicación:</strong> {{ selectedEvent.location }}<br />
-          <strong>Precio Base:</strong> <span class="text-success">{{ selectedEvent.base_price }} USD</span>
+          <strong>Precio Base:</strong>
+          <span class="text-success">{{ selectedEvent.base_price }} USD</span>
         </p>
 
         <!-- Selección de asistente -->
         <div class="mb-3">
-          <label for="attendeeSelect" class="form-label">Selecciona un asistente:</label>
-          <select v-model="selectedAttendeeId" id="attendeeSelect" class="form-select shadow-sm">
-            <option v-for="attendee in attendees" :key="attendee.id" :value="attendee.id">
-              {{ attendee.name }} - {{ attendee.email }}
+          <label for="attendeeSelect" class="form-label"
+            >Selecciona un asistente:</label
+          >
+          <select
+            v-model="selectedAttendeeId"
+            id="attendeeSelect"
+            class="form-select shadow-sm"
+          >
+            <option
+              v-for="attendee in attendees"
+              :key="attendee.id"
+              :value="attendee.id"
+            >
+              {{ attendee.first_name }} - {{ attendee.email }}
             </option>
           </select>
         </div>
@@ -38,7 +53,12 @@
         <!-- Selección de tipo de boleto -->
         <div class="mb-3">
           <label for="ticketType" class="form-label">Tipo de boleto:</label>
-          <select v-model="ticketType" id="ticketType" class="form-select shadow-sm" :disabled="isFreeTicket">
+          <select
+            v-model="ticketType"
+            id="ticketType"
+            class="form-select shadow-sm"
+            :disabled="isFreeTicket"
+          >
             <option value="free">Gratis</option>
             <option value="general">General</option>
             <option value="vip">VIP</option>
@@ -47,27 +67,55 @@
 
         <!-- Código de descuento -->
         <div class="mb-3">
-          <label for="discountCode" class="form-label">Código de descuento (opcional):</label>
-          <input v-model="discountCode" type="text" id="discountCode" class="form-control shadow-sm" />
+          <label for="discountSelect" class="form-label"
+            >Código de descuento (opcional):</label
+          >
+          <select
+            v-model="selectedDiscountId"
+            id="discountSelect"
+            class="form-select shadow-sm"
+          >
+            <option
+              v-for="discount in discounts"
+              :key="discount.id"
+              :value="discount.id"
+            >
+              {{ discount.code }} - {{ discount.discount_percentage }}%
+            </option>
+          </select>
         </div>
 
         <!-- Resumen de compra -->
         <div v-if="calculatedTotal !== null" class="mt-3 border-top pt-3">
           <h5>Resumen de Compra</h5>
-          <p>Valor Base: <strong>{{ selectedEvent.base_price }} USD</strong></p>
+          <p>
+            Valor Base: <strong>{{ selectedEvent.base_price }} USD</strong>
+          </p>
           <p v-if="ticketType !== 'free'">
             Valor Adicional: <strong>{{ additionalCost }} USD</strong>
           </p>
-          <p><strong>Total: {{ calculatedTotal }} USD</strong></p>
+          <p v-if="selectedDiscountId">
+            Descuento: <strong>{{ appliedDiscountPercentage }}%</strong>
+          </p>
+          <p>
+            <strong>Total: {{ calculatedTotal }} USD</strong>
+          </p>
         </div>
 
         <!-- Botón de compra -->
-        <button @click="purchaseTicket" class="btn btn-primary btn-lg mt-3 w-100">
+        <button
+          @click="purchaseTicket"
+          class="btn btn-primary btn-lg mt-3 w-100"
+        >
           Comprar Boleto
         </button>
 
         <!-- Mensaje de compra -->
-        <div v-if="purchaseMessage" class="alert alert-success mt-3" role="alert">
+        <div
+          v-if="purchaseMessage"
+          class="alert alert-success mt-3"
+          role="alert"
+        >
           {{ purchaseMessage }}
         </div>
       </div>
@@ -83,6 +131,8 @@ export default {
   data() {
     return {
       events: [],
+      discounts: [],
+      selectedDiscountId: null,
       selectedEventId: null,
       selectedEvent: null,
       attendees: [],
@@ -92,11 +142,13 @@ export default {
       purchaseMessage: "",
       additionalCost: 0,
       calculatedTotal: null,
+      appliedDiscountPercentage: 0, // Para mostrar el porcentaje de descuento
     };
   },
   mounted() {
     this.fetchEvents();
     this.fetchAttendees();
+    this.fetchDiscounts();
   },
   watch: {
     selectedEventId(newVal) {
@@ -105,7 +157,7 @@ export default {
     ticketType() {
       this.calculateTotal();
     },
-    discountCode() {
+    selectedDiscountId() {
       this.calculateTotal();
     },
   },
@@ -117,7 +169,9 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const response = await axios.get("http://crediservir-api.test/api/events");
+        const response = await axios.get(
+          "http://crediservir-api.test/api/events"
+        );
         this.events = response.data;
       } catch (error) {
         console.error("Error fetching events", error);
@@ -126,7 +180,9 @@ export default {
     },
     async fetchAttendees() {
       try {
-        const response = await axios.get("http://crediservir-api.test/api/attendees");
+        const response = await axios.get(
+          "http://crediservir-api.test/api/attendees"
+        );
         this.attendees = response.data;
       } catch (error) {
         console.error("Error fetching attendees", error);
@@ -135,12 +191,28 @@ export default {
     },
     async getEventDetails(eventId) {
       try {
-        const response = await axios.get(`http://crediservir-api.test/api/events/${eventId}/details`);
+        const response = await axios.get(
+          `http://crediservir-api.test/api/events/${eventId}/details`
+        );
         this.selectedEvent = response.data;
         this.calculateTotal(); // Calcular el total al seleccionar un evento
       } catch (error) {
         console.error("Error fetching event details", error);
-        Swal.fire("Error", "No se pudo cargar los detalles del evento", "error");
+        Swal.fire(
+          "Error",
+          "No se pudo cargar los detalles del evento",
+          "error"
+        );
+      }
+    },
+    async fetchDiscounts() {
+      try {
+        const response = await axios.get(
+          "http://crediservir-api.test/api/discounts"
+        );
+        this.discounts = response.data;
+      } catch (error) {
+        console.error("Error fetching discounts", error);
       }
     },
     calculateTotal() {
@@ -162,57 +234,60 @@ export default {
 
       let total = basePrice + additional;
 
-      // Validar el código de descuento
-      this.validateDiscountCode().then((discountedPrice) => {
-        total = Math.max(discountedPrice, basePrice * 0.7); // Ajustar mínimo al 70%
-        this.additionalCost = additional;
-        this.calculatedTotal = total.toFixed(2); // Formatear el total a 2 decimales
-      });
-    },
-    async validateDiscountCode() {
-      let discount = 0;
-      if (this.discountCode) {
-        try {
-          const response = await axios.post(`http://crediservir-api.test/api/discounts/validate`, {
-            code: this.discountCode,
-            event_id: this.selectedEventId,
-          });
-          discount = response.data.discount_percentage;
-        } catch (error) {
-          console.error("Error validating discount code", error);
-          Swal.fire("Error", "Código de descuento no válido", "error");
+      // Validar y aplicar el descuento seleccionado
+      if (this.selectedDiscountId) {
+        const selectedDiscount = this.discounts.find(
+          (discount) => discount.id === this.selectedDiscountId
+        );
+        if (selectedDiscount) {
+          const discountPercentage = selectedDiscount.discount_percentage;
+          this.appliedDiscountPercentage = discountPercentage;
+          total -= total * (discountPercentage / 100);
         }
       }
-      const basePrice = parseFloat(this.selectedEvent.base_price);
-      const additional = this.ticketType === "general" ? basePrice * 0.15 : this.ticketType === "vip" ? basePrice * 0.3 : 0;
-      const discountedPrice = (basePrice + additional) * (1 - discount / 100);
-      return discountedPrice;
+
+      // Asegurarse de que el total no sea menor al 70% del valor base
+      this.additionalCost = additional;
+      this.calculatedTotal = Math.max(total, basePrice * 0.7).toFixed(2);
     },
     async purchaseTicket() {
       if (!this.selectedEventId || !this.selectedAttendeeId) {
-        Swal.fire("Error", "Por favor, selecciona un evento y un asistente.", "error");
+        Swal.fire(
+          "Error",
+          "Por favor, selecciona un evento y un asistente.",
+          "error"
+        );
         return;
       }
 
       try {
-        const response = await axios.post(`http://crediservir-api.test/api/events/${this.selectedEventId}/purchase`, {
+        const payload = {
           attendee_id: this.selectedAttendeeId,
           ticket_type: this.ticketType,
-          discount_code: this.discountCode,
-        });
+          discount_code: this.selectedDiscountId
+            ? this.discounts.find(
+                (discount) => discount.id === this.selectedDiscountId
+              ).code
+            : null,
+        };
+
+        const response = await axios.post(
+          `http://crediservir-api.test/api/events/${this.selectedEventId}/purchase`,
+          payload
+        );
 
         this.purchaseMessage = response.data.message;
         Swal.fire("Éxito", this.purchaseMessage, "success");
 
         // Actualiza la capacidad restante del evento
         this.getEventDetails(this.selectedEventId);
-
       } catch (error) {
         console.error("Error purchasing ticket", error);
-        const errorMessage = error.response?.data?.message || "No se pudo completar la compra";
+        const errorMessage =
+          error.response?.data?.message || "No se pudo completar la compra";
         Swal.fire("Error", errorMessage, "error");
       }
-    }
+    },
   },
 };
 </script>

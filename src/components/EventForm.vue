@@ -19,6 +19,11 @@
           <th>Título</th>
           <th>Fecha</th>
           <th>Descripción</th>
+          <th>Lugar</th>
+          <th>Capacidad</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+
           <th>Acciones</th>
         </tr>
       </thead>
@@ -28,6 +33,10 @@
           <td>{{ event.title }}</td>
           <td>{{ event.date }}</td>
           <td>{{ event.description }}</td>
+          <td>{{ event.location }}</td>
+          <td>{{ event.capacity }}</td>
+          <td>{{ event.type }}</td>
+          <td>{{ event.base_price }}</td>
           <td>
             <button class="btn btn-warning btn-sm" @click="editEvent(event)">Editar</button>
             <button class="btn btn-danger btn-sm" @click="deleteEvent(event.id)">Eliminar</button>
