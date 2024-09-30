@@ -59,6 +59,10 @@ const routes = [
     component: TicketsForm,
     meta: { requiresAuth: true }, // Si necesitas autenticación
   },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/login',
+  },
 ];
 // Crear el router
 const router = createRouter({
