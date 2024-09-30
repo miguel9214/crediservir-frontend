@@ -19,7 +19,7 @@
               Disfruta de los mejores eventos y vive las mejores expericiancias.
               Que esperas para comprar tu entrada!
             </p>
-            <router-link to="/events" class="btn btn-primary"
+            <router-link to="/tickest" class="btn btn-primary"
               >Comprar</router-link
             >
           </div>

@@ -19,16 +19,16 @@ const routes = [
     component: Login,
   },
   {
-    path: '/home',
-    name: 'home',
-    component: Home,
-  },
-  {
     path: '/register',
     name: 'register',
     component: Register,
   },
-
+  {
+    path: '/home',
+    name: 'home',
+    component: Home,
+    meta: { requiresAuth: true },
+  },
   {
     path: '/events',
     name: 'events',
