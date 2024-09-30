@@ -23,7 +23,6 @@
           <th>Capacidad</th>
           <th>Tipo</th>
           <th>Valor</th>
-
           <th>Acciones</th>
         </tr>
       </thead>
@@ -36,7 +35,7 @@
           <td>{{ event.location }}</td>
           <td>{{ event.capacity }}</td>
           <td>{{ event.type }}</td>
-          <td>{{ event.base_price }}</td>
+          <td>{{ event.type === 'free' ? '0.00' : event.base_price }}</td>
           <td>
             <button class="btn btn-warning btn-sm" @click="editEvent(event)">Editar</button>
             <button class="btn btn-danger btn-sm" @click="deleteEvent(event.id)">Eliminar</button>
@@ -67,6 +66,44 @@
                 <label for="description" class="form-label">Descripción</label>
                 <textarea v-model="eventData.description" class="form-control" id="description" required></textarea>
               </div>
+              <div class="mb-3">
+                <label for="location" class="form-label">Lugar</label>
+                <input v-model="eventData.location" type="text" class="form-control" id="location" required />
+              </div>
+              <div class="mb-3">
+                <label for="capacity" class="form-label">Capacidad</label>
+                <input v-model="eventData.capacity" type="number" class="form-control" id="capacity" required />
+              </div>
+              <div class="mb-3">
+                <label for="type" class="form-label">Tipo</label>
+                <select v-model="eventData.type" class="form-control" id="type" required>
+                  <option value="free">Gratuito</option>
+                  <option value="paid">Pagado</option>
+                </select>
+              </div>
+              <div class="mb-3" v-if="eventData.type === 'paid'">
+                <label for="base_price" class="form-label">Precio Base</label>
+                <input v-model="eventData.base_price" type="number" step="0.01" class="form-control" id="base_price" required />
+              </div>
+              <!-- Campo de Categoría -->
+              <div class="mb-3">
+                <label for="category_id" class="form-label">Categoría</label>
+                <select v-model="eventData.category_id" class="form-control" id="category_id" required>
+                  <option value="">Seleccione una categoría</option>
+                  <option v-for="category in categories" :key="category.id" :value="category.id">
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+              <!-- Apertura y Cierre de Inscripción -->
+              <div class="mb-3">
+                <label for="registration_open" class="form-label">Apertura de Inscripción</label>
+                <input v-model="eventData.registration_open" type="date" class="form-control" id="registration_open" required />
+              </div>
+              <div class="mb-3">
+                <label for="registration_close" class="form-label">Cierre de Inscripción</label>
+                <input v-model="eventData.registration_close" type="date" class="form-control" id="registration_close" required />
+              </div>
               <button type="submit" class="btn btn-primary">{{ isEditing ? 'Actualizar' : 'Crear' }}</button>
             </form>
           </div>
@@ -85,10 +122,18 @@ export default {
   data() {
     return {
       events: [],
+      categories: [], // Lista de categorías
       eventData: {
         title: '',
         date: '',
-        description: ''
+        description: '',
+        location: '',
+        capacity: '',
+        type: 'free',
+        base_price: '',
+        category_id: '', // Campo para categoría
+        registration_open: '', // Apertura de inscripción
+        registration_close: '' // Cierre de inscripción
       },
       isEditing: false,
       currentEventId: null,
@@ -108,6 +153,7 @@ export default {
   },
   mounted() {
     this.fetchEvents();
+    this.fetchCategories(); // Cargar las categorías al montar el componente
   },
   methods: {
     async fetchEvents() {
@@ -116,6 +162,14 @@ export default {
         this.events = response.data;
       } catch (error) {
         console.error('Error fetching events', error);
+      }
+    },
+    async fetchCategories() {
+      try {
+        const response = await axios.get('http://crediservir-api.test/api/categories');
+        this.categories = response.data;
+      } catch (error) {
+        console.error('Error fetching categories', error);
       }
     },
     openModal() {
@@ -129,11 +183,21 @@ export default {
       this.eventData = {
         title: '',
         date: '',
-        description: ''
+        description: '',
+        location: '',
+        capacity: '',
+        type: 'free',
+        base_price: '',
+        category_id: '', // Resetear el campo de categoría
+        registration_open: '',
+        registration_close: ''
       };
     },
     async createEvent() {
       try {
+        if (this.eventData.type === 'free') {
+          this.eventData.base_price = 0;
+        }
         const response = await axios.post('http://crediservir-api.test/api/events', this.eventData);
         this.events.push(response.data.event);
         this.closeModal();
@@ -153,6 +217,9 @@ export default {
     },
     async updateEvent() {
       try {
+        if (this.eventData.type === 'free') {
+          this.eventData.base_price = 0;
+        }
         const response = await axios.put(`http://crediservir-api.test/api/events/${this.currentEventId}`, this.eventData);
         const index = this.events.findIndex(e => e.id === this.currentEventId);
         this.events[index] = response.data.event;
@@ -163,25 +230,14 @@ export default {
         Swal.fire('Error', 'No se pudo actualizar el evento', 'error');
       }
     },
-    async deleteEvent(id) {
-      const result = await Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'No podrás recuperar este evento después de eliminarlo.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar',
-      });
-
-      if (result.isConfirmed) {
-        try {
-          await axios.delete(`http://crediservir-api.test/api/events/${id}`);
-          this.events = this.events.filter(e => e.id !== id);
-          Swal.fire('Eliminado!', 'El evento ha sido eliminado.', 'success');
-        } catch (error) {
-          console.error('Error deleting event', error);
-          Swal.fire('Error', 'No se pudo eliminar el evento', 'error');
-        }
+    async deleteEvent(eventId) {
+      try {
+        await axios.delete(`http://crediservir-api.test/api/events/${eventId}`);
+        this.events = this.events.filter(event => event.id !== eventId);
+        Swal.fire('Éxito', 'Evento eliminado con éxito', 'success');
+      } catch (error) {
+        console.error('Error deleting event', error);
+        Swal.fire('Error', 'No se pudo eliminar el evento', 'error');
       }
     },
     closeModal() {
@@ -193,28 +249,23 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+/* Estilos personalizados */
 .container {
-  max-width: 900px; /* Ancho máximo para el contenedor */
+  max-width: 800px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
 }
 
 .table {
-  background-color: #ffffff; /* Color de fondo de la tabla */
-  border-radius: 0.5rem; /* Bordes redondeados */
-  overflow: hidden; /* Esconde el desbordamiento */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-}
-
-.thead-dark th {
-  background-color: #343a40; /* Fondo oscuro para el encabezado */
-  color: white; /* Color de texto blanco */
-}
-
-.modal-content {
-  border-radius: 0.5rem; /* Bordes redondeados para el modal */
-}
-
-.btn {
-  transition: background-color 0.3s ease; /* Efecto de transición suave */
+  margin-bottom: 0;
 }
 </style>
