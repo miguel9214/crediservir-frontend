@@ -162,7 +162,7 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 900px; /* Ajuste del ancho del contenedor */
+  max-width: 600px; /* Ajuste del ancho del contenedor */
 }
 
 .table {

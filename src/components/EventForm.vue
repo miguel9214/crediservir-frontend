@@ -23,6 +23,8 @@
           <th>Capacidad</th>
           <th>Tipo</th>
           <th>Valor</th>
+          <th>Apertura de Inscripción</th>
+          <th>Cierre de Inscripción</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -36,6 +38,9 @@
           <td>{{ event.capacity }}</td>
           <td>{{ event.type }}</td>
           <td>{{ event.type === 'free' ? '0.00' : event.base_price }}</td>
+          <td>{{ event.registration_open }}</td>
+          <td>{{ event.registration_close }}</td>
+
           <td>
             <button class="btn btn-warning btn-sm" @click="editEvent(event)">Editar</button>
             <button class="btn btn-danger btn-sm" @click="deleteEvent(event.id)">Eliminar</button>
@@ -249,23 +254,29 @@ export default {
 };
 </script>
 
-<style>
-/* Estilos personalizados */
+<style scoped>
 .container {
-  max-width: 800px;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
+  max-width: 1200px; /* Ajuste del ancho del contenedor */
 }
 
 .table {
-  margin-bottom: 0;
+  background-color: #ffffff; /* Color de fondo de la tabla */
+  border-radius: 0.5rem; /* Bordes redondeados */
+  overflow: hidden; /* Esconde el desbordamiento */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
+
+.thead-dark th {
+  background-color: #343a40; /* Fondo oscuro para el encabezado */
+  color: white; /* Color de texto blanco */
+}
+
+.modal-content {
+  border-radius: 0.5rem; /* Bordes redondeados para el modal */
+}
+
+.btn {
+  transition: background-color 0.3s ease; /* Efecto de transición suave */
+}
+
 </style>

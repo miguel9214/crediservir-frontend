@@ -27,7 +27,7 @@
           <strong>Fecha:</strong> {{ selectedEvent.date }}<br />
           <strong>Ubicación:</strong> {{ selectedEvent.location }}<br />
           <strong>Precio Base:</strong>
-          <span class="text-success">{{ selectedEvent.base_price }} USD</span>
+          <span class="text-success">{{ selectedEvent.base_price }} COP</span>
         </p>
 
         <!-- Selección de asistente -->
@@ -92,7 +92,7 @@
             Valor Base: <strong>{{ selectedEvent.base_price }} USD</strong>
           </p>
           <p v-if="ticketType !== 'free'">
-            Valor Adicional: <strong>{{ additionalCost }} USD</strong>
+            Valor Adicional: <strong>{{ additionalCost }} COP</strong>
           </p>
           <p v-if="selectedDiscountId">
             Descuento: <strong>{{ appliedDiscountPercentage }}%</strong>
