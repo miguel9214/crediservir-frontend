@@ -14,6 +14,9 @@
             <router-link class="nav-link text-white" to="/tickest" @click.native="closeNavbar">Purchase Tickets</router-link>
           </li>
           <li class="nav-item">
+            <router-link class="nav-link text-white" to="/tickestList" @click.native="closeNavbar">Purchase List</router-link>
+          </li>
+          <li class="nav-item">
             <router-link class="nav-link text-white" to="/attendees" @click.native="closeNavbar">Attendees</router-link>
           </li>
           <li class="nav-item">

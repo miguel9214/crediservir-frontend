@@ -7,6 +7,7 @@ import Register from '../components/Register.vue';
 import CategoryForm from '@/components/CategoryForm.vue';
 import TicketsForm from '@/components/PurchaseTicket.vue';
 import DiscountCodeForm from '@/components/DiscountCodeForm.vue';
+import TicketsList from '@/components/PurchaseList.vue';
 
 const routes = [
   {
@@ -57,6 +58,12 @@ const routes = [
     path: '/tickest', // Ruta para crear una nueva categoría
     name: 'tickest',
     component: TicketsForm,
+    meta: { requiresAuth: true }, // Si necesitas autenticación
+  },
+  {
+    path: '/tickestList', // Ruta para crear una nueva categoría
+    name: 'tickestList',
+    component: TicketsList,
     meta: { requiresAuth: true }, // Si necesitas autenticación
   },
   {
