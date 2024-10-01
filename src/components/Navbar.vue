@@ -8,25 +8,25 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/home" @click.native="closeNavbar">Home</router-link>
+            <router-link class="nav-link text-white" to="/home" @click.native="closeNavbar">Menu principal</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/tickest" @click.native="closeNavbar">Purchase Tickets</router-link>
+            <router-link class="nav-link text-white" to="/tickest" @click.native="closeNavbar">Compra de entradas</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/tickestList" @click.native="closeNavbar">Purchase List</router-link>
+            <router-link class="nav-link text-white" to="/tickestList" @click.native="closeNavbar">Historial de compras</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/attendees" @click.native="closeNavbar">Attendees</router-link>
+            <router-link class="nav-link text-white" to="/attendees" @click.native="closeNavbar">Asistentes</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/events" @click.native="closeNavbar">Events</router-link>
+            <router-link class="nav-link text-white" to="/events" @click.native="closeNavbar">Eventos</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/categories" @click.native="closeNavbar">Categories</router-link>
+            <router-link class="nav-link text-white" to="/categories" @click.native="closeNavbar">Categorias</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-white" to="/discounts" @click.native="closeNavbar">Discount Codes</router-link>
+            <router-link class="nav-link text-white" to="/discounts" @click.native="closeNavbar">Codigos de descuento</router-link>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">

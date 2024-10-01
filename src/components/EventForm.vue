@@ -44,6 +44,7 @@
           <td>
             <button class="btn btn-warning btn-sm" @click="editEvent(event)">Editar</button>
             <button class="btn btn-danger btn-sm" @click="deleteEvent(event.id)">Eliminar</button>
+            <router-link to="/tickest" class="btn btn-success btn-sm">Comprar</router-link>
           </td>
         </tr>
       </tbody>

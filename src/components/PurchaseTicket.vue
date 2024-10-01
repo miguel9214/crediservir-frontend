@@ -89,7 +89,7 @@
         <div v-if="calculatedTotal !== null" class="mt-3 border-top pt-3">
           <h5>Resumen de Compra</h5>
           <p>
-            Valor Base: <strong>{{ selectedEvent.base_price }} USD</strong>
+            Valor Base: <strong>{{ selectedEvent.base_price }} COP</strong>
           </p>
           <p v-if="ticketType !== 'free'">
             Valor Adicional: <strong>{{ additionalCost }} COP</strong>
@@ -98,7 +98,7 @@
             Descuento: <strong>{{ appliedDiscountPercentage }}%</strong>
           </p>
           <p>
-            <strong>Total: {{ calculatedTotal }} USD</strong>
+            <strong>Total: {{ calculatedTotal }} COP</strong>
           </p>
         </div>
 
@@ -126,6 +126,8 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
+import jsPDF from "jspdf"; // Asegúrate de tener instalado jsPDF
+import html2canvas from "html2canvas"; // Asegúrate de tener instalado html2canvas
 
 export default {
   data() {
@@ -138,11 +140,10 @@ export default {
       attendees: [],
       selectedAttendeeId: null,
       ticketType: "free",
-      discountCode: "",
       purchaseMessage: "",
       additionalCost: 0,
       calculatedTotal: null,
-      appliedDiscountPercentage: 0, // Para mostrar el porcentaje de descuento
+      appliedDiscountPercentage: 0,
     };
   },
   mounted() {
@@ -152,7 +153,11 @@ export default {
   },
   watch: {
     selectedEventId(newVal) {
-      this.getEventDetails(newVal);
+      if (newVal) {
+        this.getEventDetails(newVal);
+      } else {
+        this.selectedEvent = null; // Limpia el evento seleccionado si el ID es null
+      }
     },
     ticketType() {
       this.calculateTotal();
@@ -169,47 +174,32 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/events"
-        );
+        const response = await axios.get("http://crediservir-api.test/api/events");
         this.events = response.data;
       } catch (error) {
-        console.error("Error fetching events", error);
         Swal.fire("Error", "No se pudo cargar los eventos", "error");
       }
     },
     async fetchAttendees() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/attendees"
-        );
+        const response = await axios.get("http://crediservir-api.test/api/attendees");
         this.attendees = response.data;
       } catch (error) {
-        console.error("Error fetching attendees", error);
         Swal.fire("Error", "No se pudo cargar los asistentes", "error");
       }
     },
     async getEventDetails(eventId) {
       try {
-        const response = await axios.get(
-          `http://crediservir-api.test/api/events/${eventId}/details`
-        );
+        const response = await axios.get(`http://crediservir-api.test/api/events/${eventId}/details`);
         this.selectedEvent = response.data;
-        this.calculateTotal(); // Calcular el total al seleccionar un evento
+        this.calculateTotal();
       } catch (error) {
-        console.error("Error fetching event details", error);
-        Swal.fire(
-          "Error",
-          "No se pudo cargar los detalles del evento",
-          "error"
-        );
+        Swal.fire("Error", "No se pudo cargar los detalles del evento", "error");
       }
     },
     async fetchDiscounts() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/discounts"
-        );
+        const response = await axios.get("http://crediservir-api.test/api/discounts");
         this.discounts = response.data;
       } catch (error) {
         console.error("Error fetching discounts", error);
@@ -220,21 +210,20 @@ export default {
 
       const basePrice = parseFloat(this.selectedEvent.base_price);
       if (isNaN(basePrice)) {
-        this.calculatedTotal = null; // Restablecer total si basePrice es inválido
+        this.calculatedTotal = null;
         return;
       }
 
       let additional = 0;
 
       if (this.ticketType === "general") {
-        additional = basePrice * 0.15; // 15% adicional
+        additional = basePrice * 0.15;
       } else if (this.ticketType === "vip") {
-        additional = basePrice * 0.3; // 30% adicional
+        additional = basePrice * 0.3;
       }
 
       let total = basePrice + additional;
 
-      // Validar y aplicar el descuento seleccionado
       if (this.selectedDiscountId) {
         const selectedDiscount = this.discounts.find(
           (discount) => discount.id === this.selectedDiscountId
@@ -246,17 +235,12 @@ export default {
         }
       }
 
-      // Asegurarse de que el total no sea menor al 70% del valor base
       this.additionalCost = additional;
       this.calculatedTotal = Math.max(total, basePrice * 0.7).toFixed(2);
     },
     async purchaseTicket() {
       if (!this.selectedEventId || !this.selectedAttendeeId) {
-        Swal.fire(
-          "Error",
-          "Por favor, selecciona un evento y un asistente.",
-          "error"
-        );
+        Swal.fire("Error", "Por favor, selecciona un evento y un asistente.", "error");
         return;
       }
 
@@ -277,16 +261,42 @@ export default {
         );
 
         this.purchaseMessage = response.data.message;
+        await this.generatePDFReceipt(); // Generar el PDF con el pantallazo
         Swal.fire("Éxito", this.purchaseMessage, "success");
 
-        // Actualiza la capacidad restante del evento
-        this.getEventDetails(this.selectedEventId);
+        // Recargar los eventos y asistentes después de la compra
+        await this.fetchEvents();
+        await this.fetchAttendees();
+        this.resetForm(); // Limpiar el formulario después de la compra
       } catch (error) {
         console.error("Error purchasing ticket", error);
         const errorMessage =
           error.response?.data?.message || "No se pudo completar la compra";
         Swal.fire("Error", errorMessage, "error");
       }
+    },
+    async generatePDFReceipt() {
+      // Usar html2canvas para capturar el pantallazo
+      const componentElement = document.querySelector(".container"); // Selecciona el contenedor del componente
+      const canvas = await html2canvas(componentElement);
+      const imgData = canvas.toDataURL("image/png");
+
+      const doc = new jsPDF();
+      doc.addImage(imgData, "PNG", 10, 10, 180, 160); // Ajusta el tamaño según sea necesario
+
+      // Guardar el PDF
+      doc.save("recibo_compra.pdf");
+    },
+    resetForm() {
+      this.selectedEventId = null;
+      this.selectedEvent = null; // Limpia los detalles del evento
+      this.selectedAttendeeId = null;
+      this.ticketType = "free";
+      this.selectedDiscountId = null;
+      this.purchaseMessage = "";
+      this.additionalCost = 0;
+      this.calculatedTotal = null;
+      this.appliedDiscountPercentage = 0;
     },
   },
 };
