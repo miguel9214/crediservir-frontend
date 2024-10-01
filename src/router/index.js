@@ -73,11 +73,11 @@ const routes = [
 ];
 // Crear el router
 const router = createRouter({
-  history: createWebHistory(),  // Cambia a createWebHistory para eliminar el hash
+  history: createWebHistory(), 
   routes
 });
 
-// En tu archivo de configuración del router
+
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('access_token') !== null; // Verifica si hay un token almacenado
   if (to.meta.requiresAuth && !isAuthenticated) {

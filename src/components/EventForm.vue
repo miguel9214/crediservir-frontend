@@ -128,7 +128,7 @@ export default {
   data() {
     return {
       events: [],
-      categories: [], // Lista de categorías
+      categories: [], 
       eventData: {
         title: '',
         date: '',
@@ -137,9 +137,9 @@ export default {
         capacity: '',
         type: 'free',
         base_price: '',
-        category_id: '', // Campo para categoría
-        registration_open: '', // Apertura de inscripción
-        registration_close: '' // Cierre de inscripción
+        category_id: '', 
+        registration_open: '', 
+        registration_close: '' 
       },
       isEditing: false,
       currentEventId: null,
@@ -159,7 +159,7 @@ export default {
   },
   mounted() {
     this.fetchEvents();
-    this.fetchCategories(); // Cargar las categorías al montar el componente
+    this.fetchCategories();
   },
   methods: {
     async fetchEvents() {
@@ -194,7 +194,7 @@ export default {
         capacity: '',
         type: 'free',
         base_price: '',
-        category_id: '', // Resetear el campo de categoría
+        category_id: '', 
         registration_open: '',
         registration_close: ''
       };
@@ -257,27 +257,27 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1200px; /* Ajuste del ancho del contenedor */
+  max-width: 1200px; 
 }
 
 .table {
-  background-color: #ffffff; /* Color de fondo de la tabla */
-  border-radius: 0.5rem; /* Bordes redondeados */
-  overflow: hidden; /* Esconde el desbordamiento */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  background-color: #ffffff; 
+  border-radius: 0.5rem; 
+  overflow: hidden; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
 }
 
 .thead-dark th {
-  background-color: #343a40; /* Fondo oscuro para el encabezado */
-  color: white; /* Color de texto blanco */
+  background-color: #343a40; 
+  color: white;
 }
 
 .modal-content {
-  border-radius: 0.5rem; /* Bordes redondeados para el modal */
+  border-radius: 0.5rem; 
 }
 
 .btn {
-  transition: background-color 0.3s ease; /* Efecto de transición suave */
+  transition: background-color 0.3s ease;
 }
 
 </style>

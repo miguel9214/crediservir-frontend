@@ -71,29 +71,29 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1200px; /* Ampliar el ancho máximo para un diseño más amplio */
+  max-width: 1200px; 
 }
 
 .card {
-  margin-bottom: 20px; /* Espaciado entre tarjetas */
-  border-radius: 10px; /* Bordes redondeados */
-  transition: transform 0.2s; /* Suavizar la transición al hacer hover */
+  margin-bottom: 20px; 
+  border-radius: 10px; 
+  transition: transform 0.2s; 
 }
 
 .card:hover {
-  transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+  transform: translateY(-5px); 
 }
 
 .card-title {
-  font-weight: bold; /* Negrita para los títulos */
+  font-weight: bold; 
 }
 
-/* Cambios en botones para un efecto de hover más atractivo */
+
 .btn {
   transition: background-color 0.3s, border-color 0.3s;
 }
 
 .btn:hover {
-  opacity: 0.9; /* Efecto de desvanecimiento al pasar el mouse */
+  opacity: 0.9; 
 }
 </style>

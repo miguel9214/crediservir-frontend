@@ -58,16 +58,15 @@ import Swal from 'sweetalert2';
 export default {
   data() {
     return {
-      purchases: [], // Lista de compras
-      searchQuery: '', // Texto de búsqueda para el filtro
+      purchases: [],
+      searchQuery: '', 
     };
   },
   mounted() {
-    this.fetchPurchases(); // Cargar compras al montar el componente
+    this.fetchPurchases();
   },
   computed: {
     filteredPurchases() {
-      // Filtra las compras según el texto de búsqueda
       return this.purchases.filter((purchase) =>
         purchase.ticket_type.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
@@ -76,7 +75,6 @@ export default {
   methods: {
     async fetchPurchases() {
       try {
-        // Cambia esta URL por la que necesites para obtener las compras
         const response = await axios.get('http://crediservir-api.test/api/purchases');
         this.purchases = response.data;
       } catch (error) {
@@ -90,22 +88,22 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1200px; /* Ajuste del ancho del contenedor */
+  max-width: 1200px; 
 }
 
 .table {
-  background-color: #ffffff; /* Color de fondo de la tabla */
-  border-radius: 0.5rem; /* Bordes redondeados */
-  overflow: hidden; /* Esconde el desbordamiento */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  background-color: #ffffff; 
+  border-radius: 0.5rem; 
+  overflow: hidden; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
 }
 
 .thead-dark th {
-  background-color: #343a40; /* Fondo oscuro para el encabezado */
-  color: white; /* Color de texto blanco */
+  background-color: #343a40; 
+  color: white; 
 }
 
 .alert {
-  font-size: 1.2rem; /* Aumenta el tamaño de fuente para el mensaje de alerta */
+  font-size: 1.2rem; 
 }
 </style>

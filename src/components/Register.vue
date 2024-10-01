@@ -48,7 +48,7 @@
 
 <script>
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Importar SweetAlert2
+import Swal from 'sweetalert2'; 
 
 export default {
   data() {
@@ -68,7 +68,7 @@ export default {
         });
         console.log('Registration successful', response.data);
 
-        // Mostrar mensaje de éxito con SweetAlert2
+        
         await Swal.fire({
           icon: 'success',
           title: '¡Registro exitoso!',
@@ -80,7 +80,6 @@ export default {
       } catch (error) {
         console.error('Error registering', error);
 
-        // Mostrar mensaje de error con SweetAlert2
         await Swal.fire({
           icon: 'error',
           title: 'Error al registrarse',

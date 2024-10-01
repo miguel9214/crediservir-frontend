@@ -59,28 +59,27 @@ export default {
 </script>
 
 <style scoped>
-/* Estilo del navbar */
+
 .navbar {
-  background: linear-gradient(135deg, #4caf50, #66bb6a) !important; /* Degradado verde */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para profundidad */
+  background: linear-gradient(135deg, #4caf50, #66bb6a) !important; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
-/* Estilos del texto */
+
 .navbar-brand {
   font-size: 1.5rem;
 }
 
 .nav-link {
-  transition: color 0.3s ease, transform 0.3s ease; /* Transición suave */
-  padding: 0.5rem 1rem; /* Mejora del padding para una mejor usabilidad */
+  transition: color 0.3s ease, transform 0.3s ease; 
+  padding: 0.5rem 1rem; 
 }
 
 .nav-link:hover {
-  color: #d4edda !important; /* Color al pasar el mouse */
-  transform: translateY(-3px); /* Efecto de elevarse un poco al pasar el mouse */
+  color: #d4edda !important; 
+  transform: translateY(-3px); 
 }
 
-/* Sombra en el botón de navegación cuando está colapsado */
 .navbar-toggler {
   border-color: rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
@@ -90,7 +89,6 @@ export default {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Aumentar el contraste del icono al colapsar */
 .navbar-toggler-icon {
   filter: invert(1);
 }

@@ -271,27 +271,27 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 900px; /* Ajuste del ancho del contenedor */
+  max-width: 900px; 
 }
 
 .table {
-  background-color: #ffffff; /* Color de fondo de la tabla */
-  border-radius: 0.5rem; /* Bordes redondeados */
-  overflow: hidden; /* Esconde el desbordamiento */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  background-color: #ffffff; 
+  border-radius: 0.5rem; 
+  overflow: hidden; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
 }
 
 .thead-dark th {
-  background-color: #343a40; /* Fondo oscuro para el encabezado */
-  color: white; /* Color de texto blanco */
+  background-color: #343a40; 
+  color: white; 
 }
 
 .modal-content {
-  border-radius: 0.5rem; /* Bordes redondeados para el modal */
+  border-radius: 0.5rem; 
 }
 
 .btn {
-  transition: background-color 0.3s ease; /* Efecto de transición suave */
+  transition: background-color 0.3s ease; 
 }
 
 </style>

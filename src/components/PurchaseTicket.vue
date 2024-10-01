@@ -126,8 +126,8 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
-import jsPDF from "jspdf"; // Asegúrate de tener instalado jsPDF
-import html2canvas from "html2canvas"; // Asegúrate de tener instalado html2canvas
+import jsPDF from "jspdf"; 
+import html2canvas from "html2canvas"; 
 
 export default {
   data() {
@@ -261,7 +261,7 @@ export default {
         );
 
         this.purchaseMessage = response.data.message;
-        await this.generatePDFReceipt(); // Generar el PDF con el pantallazo
+        await this.generatePDFReceipt(); // Generar el PDF
         Swal.fire("Éxito", this.purchaseMessage, "success");
 
         // Recargar los eventos y asistentes después de la compra
@@ -276,20 +276,19 @@ export default {
       }
     },
     async generatePDFReceipt() {
-      // Usar html2canvas para capturar el pantallazo
-      const componentElement = document.querySelector(".container"); // Selecciona el contenedor del componente
+      const componentElement = document.querySelector(".container"); 
       const canvas = await html2canvas(componentElement);
       const imgData = canvas.toDataURL("image/png");
 
       const doc = new jsPDF();
-      doc.addImage(imgData, "PNG", 10, 10, 180, 160); // Ajusta el tamaño según sea necesario
+      doc.addImage(imgData, "PNG", 10, 10, 180, 160);
 
       // Guardar el PDF
       doc.save("recibo_compra.pdf");
     },
     resetForm() {
       this.selectedEventId = null;
-      this.selectedEvent = null; // Limpia los detalles del evento
+      this.selectedEvent = null; 
       this.selectedAttendeeId = null;
       this.ticketType = "free";
       this.selectedDiscountId = null;

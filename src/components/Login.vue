@@ -48,27 +48,22 @@ export default {
     return {
       email: '',
       password: '',
-      errorMessage: '', // Estado para manejar el mensaje de error
+      errorMessage: '', 
     };
   },
   methods: {
     async login() {
-      this.errorMessage = ''; // Reiniciar mensaje de error
+      this.errorMessage = ''; 
       try {
         const response = await axios.post('http://crediservir-api.test/api/auth/login', {
           email: this.email,
           password: this.password,
         });
-
         console.log('Login successful', response.data);
-        // Almacenar el token (si lo necesitas)
         localStorage.setItem('access_token', response.data.access_token);
-        
-        // Redirigir a la ruta /home
         this.$router.push('/home');
       } catch (error) {
         console.error('Error logging in', error);
-        // Establecer el mensaje de error
         this.errorMessage = 'Credenciales incorrectas. Por favor, inténtalo de nuevo.';
       }
     },
@@ -94,7 +89,6 @@ p {
   font-size: 0.9rem;
 }
 
-/* Estilos personalizados para los inputs */
 .custom-input {
   border: 2px solid #ced4da;
   border-radius: 10px;
@@ -105,20 +99,18 @@ p {
   transition: all 0.3s ease;
 }
 
-/* Cambio de estilo cuando el input está enfocado */
+
 .custom-input:focus {
-  border-color: #6cbf8a; /* Color al hacer foco */
+  border-color: #6cbf8a; 
   background-color: #ffffff;
   box-shadow: 0 0 5px rgba(108, 191, 138, 0.5);
   outline: none;
 }
 
-/* Estilo para el placeholder */
 .custom-input::placeholder {
   color: #adb5bd;
 }
 
-/* Mejorando el aspecto del botón */
 .btn {
   padding: 12px;
   font-size: 1.1rem;
