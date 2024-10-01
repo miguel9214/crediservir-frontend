@@ -37,7 +37,7 @@ Crediservir API es una aplicación diseñada para gestionar la compra de boletos
 
 ### inicio de sesion
 
-4. **comando**:
+<!-- 4. **comando**: -->
 
    ```bash
    usuario: admin@example.com
