@@ -67,20 +67,9 @@
 
         <!-- Código de descuento -->
         <div class="mb-3">
-          <label for="discountSelect" class="form-label"
-            >Códigos de descuento (opcional):</label
-          >
-          <select
-            v-model="selectedDiscountIds"
-            id="discountSelect"
-            class="form-select shadow-sm"
-            multiple
-          >
-            <option
-              v-for="discount in discounts"
-              :key="discount.id"
-              :value="discount.id"
-            >
+          <label for="discountSelect" class="form-label">Códigos de descuento (opcional):</label>
+          <select v-model="selectedDiscountIds" id="discountSelect" class="form-select shadow-sm" multiple>
+            <option v-for="discount in discounts" :key="discount.id" :value="discount.id">
               {{ discount.code }} - {{ discount.discount_percentage }}%
             </option>
           </select>
@@ -95,8 +84,8 @@
           <p v-if="ticketType !== 'free'">
             Valor Adicional: <strong>{{ additionalCost }} COP</strong>
           </p>
-          <p v-if="selectedDiscountId">
-            Descuento: <strong>{{ appliedDiscountPercentage }}%</strong>
+          <p v-if="selectedDiscountIds.length">
+            Descuento Total: <strong>{{ appliedDiscountPercentage }}%</strong>
           </p>
           <p>
             <strong>Total: {{ calculatedTotal }} COP</strong>
@@ -135,7 +124,7 @@ export default {
     return {
       events: [],
       discounts: [],
-      selectedDiscountId: null,
+      selectedDiscountIds: [],
       selectedEventId: null,
       selectedEvent: null,
       attendees: [],
@@ -157,13 +146,13 @@ export default {
       if (newVal) {
         this.getEventDetails(newVal);
       } else {
-        this.selectedEvent = null; // Limpia el evento seleccionado si el ID es null
+        this.selectedEvent = null;
       }
     },
     ticketType() {
       this.calculateTotal();
     },
-    selectedDiscountId() {
+    selectedDiscountIds() {
       this.calculateTotal();
     },
   },
@@ -175,9 +164,7 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/events"
-        );
+        const response = await axios.get("http://crediservir-api.test/api/events");
         this.events = response.data;
       } catch (error) {
         Swal.fire("Error", "No se pudo cargar los eventos", "error");
@@ -185,9 +172,7 @@ export default {
     },
     async fetchAttendees() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/attendees"
-        );
+        const response = await axios.get("http://crediservir-api.test/api/attendees");
         this.attendees = response.data;
       } catch (error) {
         Swal.fire("Error", "No se pudo cargar los asistentes", "error");
@@ -195,24 +180,16 @@ export default {
     },
     async getEventDetails(eventId) {
       try {
-        const response = await axios.get(
-          `http://crediservir-api.test/api/events/${eventId}/details`
-        );
+        const response = await axios.get(`http://crediservir-api.test/api/events/${eventId}/details`);
         this.selectedEvent = response.data;
         this.calculateTotal();
       } catch (error) {
-        Swal.fire(
-          "Error",
-          "No se pudo cargar los detalles del evento",
-          "error"
-        );
+        Swal.fire("Error", "No se pudo cargar los detalles del evento", "error");
       }
     },
     async fetchDiscounts() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/discounts"
-        );
+        const response = await axios.get("http://crediservir-api.test/api/discounts");
         this.discounts = response.data;
       } catch (error) {
         console.error("Error fetching discounts", error);
@@ -236,28 +213,29 @@ export default {
       }
 
       let total = basePrice + additional;
+      let totalDiscountPercentage = 0;
 
-      if (this.selectedDiscountId) {
-        const selectedDiscount = this.discounts.find(
-          (discount) => discount.id === this.selectedDiscountId
-        );
-        if (selectedDiscount) {
-          const discountPercentage = selectedDiscount.discount_percentage;
-          this.appliedDiscountPercentage = discountPercentage;
-          total -= total * (discountPercentage / 100);
-        }
+      // Aplicar múltiples descuentos si se seleccionan varios códigos
+      if (this.selectedDiscountIds.length > 0) {
+        this.selectedDiscountIds.forEach((discountId) => {
+          const selectedDiscount = this.discounts.find((discount) => discount.id === discountId);
+          if (selectedDiscount) {
+            totalDiscountPercentage += parseFloat(selectedDiscount.discount_percentage);
+          }
+        });
       }
+
+      this.appliedDiscountPercentage = totalDiscountPercentage;
+
+      // Aplicar descuento acumulado
+      total -= total * (totalDiscountPercentage / 100);
 
       this.additionalCost = additional;
       this.calculatedTotal = Math.max(total, basePrice * 0.7).toFixed(2);
     },
     async purchaseTicket() {
       if (!this.selectedEventId || !this.selectedAttendeeId) {
-        Swal.fire(
-          "Error",
-          "Por favor, selecciona un evento y un asistente.",
-          "error"
-        );
+        Swal.fire("Error", "Por favor, selecciona un evento y un asistente.", "error");
         return;
       }
 
@@ -265,11 +243,9 @@ export default {
         const payload = {
           attendee_id: this.selectedAttendeeId,
           ticket_type: this.ticketType,
-          discount_code: this.selectedDiscountId
-            ? this.discounts.find(
-                (discount) => discount.id === this.selectedDiscountId
-              ).code
-            : null,
+          discount_codes: this.selectedDiscountIds.map(
+            (discountId) => this.discounts.find((discount) => discount.id === discountId).code
+          ),
         };
 
         const response = await axios.post(
@@ -293,24 +269,19 @@ export default {
       }
     },
     async generatePDFReceipt() {
-      const componentElement = document.querySelector(".container");
-      const canvas = await html2canvas(componentElement);
-      const imgData = canvas.toDataURL("image/png");
-
       const doc = new jsPDF();
+      const element = document.body;
+      const canvas = await html2canvas(element);
+      const imgData = canvas.toDataURL("image/png");
       doc.addImage(imgData, "PNG", 10, 10, 180, 160);
-
-      // Guardar el PDF
-      doc.save("recibo_compra.pdf");
+      doc.save("recibo.pdf");
     },
     resetForm() {
       this.selectedEventId = null;
-      this.selectedEvent = null;
       this.selectedAttendeeId = null;
       this.ticketType = "free";
-      this.selectedDiscountId = null;
+      this.selectedDiscountIds = [];
       this.purchaseMessage = "";
-      this.additionalCost = 0;
       this.calculatedTotal = null;
       this.appliedDiscountPercentage = 0;
     },
