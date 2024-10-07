@@ -13,7 +13,7 @@
     <button class="btn btn-success mb-3" @click="openModal">Crear Nueva Categoría</button>
 
     <!-- Tabla de categorías -->
-    <table class="table table-striped table-responsive">
+    <table class="table table-striped table-responsive table-bordered">
       <thead class="thead-dark">
         <tr>
           <th>#</th>

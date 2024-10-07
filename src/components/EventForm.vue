@@ -12,7 +12,7 @@
       Crear Nuevo Evento
     </button>
 
-    <table class="table table-striped table-responsive">
+    <table class="table table-striped table-responsive table-bordered">
       <thead class="thead-dark">
         <tr>
           <th>#</th>
@@ -257,27 +257,32 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1200px; 
+  max-width: 1200px;
 }
 
 .table {
-  background-color: #ffffff; 
-  border-radius: 0.5rem; 
-  overflow: hidden; 
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table td,
+.table th {
+  font-size: 0.9rem; /* Tamaño reducido para que quepa mejor */
 }
 
 .thead-dark th {
-  background-color: #343a40; 
+  background-color: #343a40;
   color: white;
 }
 
-.modal-content {
-  border-radius: 0.5rem; 
+.table-responsive {
+  max-height: 400px; /* Limita la altura máxima de la tabla */
+  overflow-y: auto;
 }
 
-.btn {
-  transition: background-color 0.3s ease;
+.alert {
+  font-size: 1.2rem;
 }
-
 </style>

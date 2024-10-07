@@ -8,6 +8,8 @@ import CategoryForm from '@/components/CategoryForm.vue';
 import TicketsForm from '@/components/PurchaseTicket.vue';
 import DiscountCodeForm from '@/components/DiscountCodeForm.vue';
 import TicketsList from '@/components/PurchaseList.vue';
+import WaitingList from '@/components/WaitingList.vue';
+
 
 const routes = [
   {
@@ -64,6 +66,12 @@ const routes = [
     path: '/tickestList', // Ruta para crear una nueva categoría
     name: 'tickestList',
     component: TicketsList,
+    meta: { requiresAuth: true }, // Si necesitas autenticación
+  },
+  {
+    path: '/waitingList', // Ruta para crear una nueva categoría
+    name: 'waitingList',
+    component: WaitingList,
     meta: { requiresAuth: true }, // Si necesitas autenticación
   },
   {

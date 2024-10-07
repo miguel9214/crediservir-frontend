@@ -18,7 +18,7 @@
     </button>
 
     <!-- Tabla de códigos -->
-    <table class="table table-striped table-responsive">
+    <table class="table table-striped table-responsive table-bordered">
       <thead class="thead-dark">
         <tr>
           <th>#</th>

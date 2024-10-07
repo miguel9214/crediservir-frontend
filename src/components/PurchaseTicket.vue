@@ -301,27 +301,13 @@ export default {
       }
     },
     async generatePDFReceipt() {
-      const doc = new jsPDF("p", "mm", "letter"); // Configura el tamaño carta (8.5 x 11 pulgadas)
-
-      const element = document.body;
-
-      // Captura el elemento como una imagen
-      const canvas = await html2canvas(element, {
-        scale: 2, // Aumenta la escala para mejorar la calidad de la imagen
-        useCORS: true, // Asegúrate de que los recursos sean accesibles si hay imágenes externas
-      });
-
+      const componentElement = document.querySelector(".container"); 
+      const canvas = await html2canvas(componentElement);
       const imgData = canvas.toDataURL("image/png");
-
-      // Ajustar el tamaño de la imagen en el PDF
-      const imgWidth = 210; // Ancho de la hoja carta en mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcula la altura en proporción
-
-      // Añadir la imagen al documento PDF, centrándola
-      doc.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-
-      // Guarda el PDF
-      doc.save("recibo.pdf");
+      const doc = new jsPDF();
+      doc.addImage(imgData, "PNG", 10, 10, 180, 160);
+      // Guardar el PDF
+      doc.save("recibo_compra.pdf");
     },
     resetForm() {
       this.selectedEventId = null;
