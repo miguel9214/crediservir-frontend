@@ -67,9 +67,20 @@
 
         <!-- Código de descuento -->
         <div class="mb-3">
-          <label for="discountSelect" class="form-label">Códigos de descuento (opcional):</label>
-          <select v-model="selectedDiscountIds" id="discountSelect" class="form-select shadow-sm" multiple>
-            <option v-for="discount in discounts" :key="discount.id" :value="discount.id">
+          <label for="discountSelect" class="form-label"
+            >Códigos de descuento (opcional):</label
+          >
+          <select
+            v-model="selectedDiscountIds"
+            id="discountSelect"
+            class="form-select shadow-sm"
+            multiple
+          >
+            <option
+              v-for="discount in discounts"
+              :key="discount.id"
+              :value="discount.id"
+            >
               {{ discount.code }} - {{ discount.discount_percentage }}%
             </option>
           </select>
@@ -164,7 +175,9 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const response = await axios.get("http://crediservir-api.test/api/events");
+        const response = await axios.get(
+          "http://crediservir-api.test/api/events"
+        );
         this.events = response.data;
       } catch (error) {
         Swal.fire("Error", "No se pudo cargar los eventos", "error");
@@ -172,7 +185,9 @@ export default {
     },
     async fetchAttendees() {
       try {
-        const response = await axios.get("http://crediservir-api.test/api/attendees");
+        const response = await axios.get(
+          "http://crediservir-api.test/api/attendees"
+        );
         this.attendees = response.data;
       } catch (error) {
         Swal.fire("Error", "No se pudo cargar los asistentes", "error");
@@ -180,16 +195,24 @@ export default {
     },
     async getEventDetails(eventId) {
       try {
-        const response = await axios.get(`http://crediservir-api.test/api/events/${eventId}/details`);
+        const response = await axios.get(
+          `http://crediservir-api.test/api/events/${eventId}/details`
+        );
         this.selectedEvent = response.data;
         this.calculateTotal();
       } catch (error) {
-        Swal.fire("Error", "No se pudo cargar los detalles del evento", "error");
+        Swal.fire(
+          "Error",
+          "No se pudo cargar los detalles del evento",
+          "error"
+        );
       }
     },
     async fetchDiscounts() {
       try {
-        const response = await axios.get("http://crediservir-api.test/api/discounts");
+        const response = await axios.get(
+          "http://crediservir-api.test/api/discounts"
+        );
         this.discounts = response.data;
       } catch (error) {
         console.error("Error fetching discounts", error);
@@ -218,9 +241,13 @@ export default {
       // Aplicar múltiples descuentos si se seleccionan varios códigos
       if (this.selectedDiscountIds.length > 0) {
         this.selectedDiscountIds.forEach((discountId) => {
-          const selectedDiscount = this.discounts.find((discount) => discount.id === discountId);
+          const selectedDiscount = this.discounts.find(
+            (discount) => discount.id === discountId
+          );
           if (selectedDiscount) {
-            totalDiscountPercentage += parseFloat(selectedDiscount.discount_percentage);
+            totalDiscountPercentage += parseFloat(
+              selectedDiscount.discount_percentage
+            );
           }
         });
       }
@@ -235,7 +262,11 @@ export default {
     },
     async purchaseTicket() {
       if (!this.selectedEventId || !this.selectedAttendeeId) {
-        Swal.fire("Error", "Por favor, selecciona un evento y un asistente.", "error");
+        Swal.fire(
+          "Error",
+          "Por favor, selecciona un evento y un asistente.",
+          "error"
+        );
         return;
       }
 
@@ -244,7 +275,8 @@ export default {
           attendee_id: this.selectedAttendeeId,
           ticket_type: this.ticketType,
           discount_codes: this.selectedDiscountIds.map(
-            (discountId) => this.discounts.find((discount) => discount.id === discountId).code
+            (discountId) =>
+              this.discounts.find((discount) => discount.id === discountId).code
           ),
         };
 
@@ -269,11 +301,26 @@ export default {
       }
     },
     async generatePDFReceipt() {
-      const doc = new jsPDF();
+      const doc = new jsPDF("p", "mm", "letter"); // Configura el tamaño carta (8.5 x 11 pulgadas)
+
       const element = document.body;
-      const canvas = await html2canvas(element);
+
+      // Captura el elemento como una imagen
+      const canvas = await html2canvas(element, {
+        scale: 2, // Aumenta la escala para mejorar la calidad de la imagen
+        useCORS: true, // Asegúrate de que los recursos sean accesibles si hay imágenes externas
+      });
+
       const imgData = canvas.toDataURL("image/png");
-      doc.addImage(imgData, "PNG", 10, 10, 180, 160);
+
+      // Ajustar el tamaño de la imagen en el PDF
+      const imgWidth = 210; // Ancho de la hoja carta en mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calcula la altura en proporción
+
+      // Añadir la imagen al documento PDF, centrándola
+      doc.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+
+      // Guarda el PDF
       doc.save("recibo.pdf");
     },
     resetForm() {
