@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { useApi } from '@/composables/use-api';
 
 export default {
   data() {
@@ -55,12 +55,12 @@ export default {
     async login() {
       this.errorMessage = ''; 
       try {
-        const response = await axios.post('http://crediservir-api.test/api/auth/login', {
+        const response = await useApi("auth/login","POST", {
           email: this.email,
           password: this.password,
         });
-        console.log('Login successful', response.data);
-        localStorage.setItem('access_token', response.data.access_token);
+        console.log('Login successful', response);
+        localStorage.setItem('access_token', response.access_token);
         this.$router.push('/home');
       } catch (error) {
         console.error('Error logging in', error);

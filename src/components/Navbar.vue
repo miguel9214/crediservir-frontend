@@ -17,6 +17,9 @@
             <router-link class="nav-link text-white" to="/tickestList" @click.native="closeNavbar">Historial de compras</router-link>
           </li>
           <li class="nav-item">
+            <router-link class="nav-link text-white" to="/waitingList" @click.native="closeNavbar">Lista de espera</router-link>
+          </li>
+          <li class="nav-item">
             <router-link class="nav-link text-white" to="/attendees" @click.native="closeNavbar">Asistentes</router-link>
           </li>
           <li class="nav-item">

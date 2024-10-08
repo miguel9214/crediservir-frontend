@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { useApi } from '@/composables/use-api';
 import Swal from 'sweetalert2';
 import { Modal } from 'bootstrap';
 
@@ -164,16 +164,16 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const response = await axios.get('http://crediservir-api.test/api/events');
-        this.events = response.data;
+        const response = await useApi('events');
+        this.events = response;
       } catch (error) {
         console.error('Error fetching events', error);
       }
     },
     async fetchCategories() {
       try {
-        const response = await axios.get('http://crediservir-api.test/api/categories');
-        this.categories = response.data;
+        const response = await useApi('categories');
+        this.categories = response;
       } catch (error) {
         console.error('Error fetching categories', error);
       }
@@ -204,8 +204,8 @@ export default {
         if (this.eventData.type === 'free') {
           this.eventData.base_price = 0;
         }
-        const response = await axios.post('http://crediservir-api.test/api/events', this.eventData);
-        this.events.push(response.data.event);
+        const response = await useApi('events','post', this.eventData);
+        this.events.push(response.event);
         this.closeModal();
         Swal.fire('Éxito', 'Evento creado con éxito', 'success');
       } catch (error) {
@@ -226,9 +226,9 @@ export default {
         if (this.eventData.type === 'free') {
           this.eventData.base_price = 0;
         }
-        const response = await axios.put(`http://crediservir-api.test/api/events/${this.currentEventId}`, this.eventData);
+        const response = await useApi(`events/${this.currentEventId}`,'put', this.eventData);
         const index = this.events.findIndex(e => e.id === this.currentEventId);
-        this.events[index] = response.data.event;
+        this.events[index] = response.event;
         this.closeModal();
         Swal.fire('Éxito', 'Evento actualizado con éxito', 'success');
       } catch (error) {
@@ -238,7 +238,7 @@ export default {
     },
     async deleteEvent(eventId) {
       try {
-        await axios.delete(`http://crediservir-api.test/api/events/${eventId}`);
+        await useApi(`events/${eventId}`, 'delete');
         this.events = this.events.filter(event => event.id !== eventId);
         Swal.fire('Éxito', 'Evento eliminado con éxito', 'success');
       } catch (error) {

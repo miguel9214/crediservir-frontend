@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { useApi } from '@/composables/use-api';
 import { Modal } from 'bootstrap';
 import Swal from 'sweetalert2';
 
@@ -85,8 +85,8 @@ export default {
   methods: {
     async fetchCategories() {
       try {
-        const response = await axios.get('http://crediservir-api.test/api/categories');
-        this.categories = response.data;
+        const response = await useApi('categories');
+        this.categories = response;
       } catch (error) {
         console.error('Error fetching categories', error);
       }
@@ -100,10 +100,10 @@ export default {
     },
     async createCategory() {
       try {
-        const response = await axios.post('http://crediservir-api.test/api/categories', {
+        const response = await useApi('categories','post', {
           name: this.categoryName,
         });
-        this.categories.push(response.data.category);
+        this.categories.push(response.category);
         this.closeModal();
         Swal.fire('Éxito', 'Categoría creada con éxito', 'success');
       } catch (error) {
@@ -120,11 +120,11 @@ export default {
     },
     async updateCategory() {
       try {
-        const response = await axios.put(`http://crediservir-api.test/api/categories/${this.currentCategoryId}`, {
+       const response = await useApi(`categories/${this.currentCategoryId}`,'put', {
           name: this.categoryName,
         });
         const index = this.categories.findIndex((c) => c.id === this.currentCategoryId);
-        this.categories[index] = response.data.category;
+        this.categories[index] = response.category;
         this.closeModal();
         Swal.fire('Éxito', 'Categoría actualizada con éxito', 'success');
       } catch (error) {
@@ -143,7 +143,7 @@ export default {
 
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://crediservir-api.test/api/categories/${id}`);
+          const response = await useApi(`categories/${id}`,'delete');
           this.categories = this.categories.filter((c) => c.id !== id);
           Swal.fire('Eliminado!', 'La categoría ha sido eliminada.', 'success');
         } catch (error) {

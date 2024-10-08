@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { useApi } from '@/composables/use-api';
 import Swal from 'sweetalert2';
 
 export default {
@@ -77,8 +77,8 @@ export default {
   methods: {
     async fetchPurchases() {
       try {
-        const response = await axios.get('http://crediservir-api.test/api/purchases');
-        this.purchases = response.data;
+        const response = await useApi('purchases');
+        this.purchases = response;
       } catch (error) {
         console.error('Error fetching purchases', error);
         Swal.fire('Error', 'No se pudo cargar el historial de compras', 'error');

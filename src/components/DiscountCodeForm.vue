@@ -37,7 +37,7 @@
           <td>{{ discount.discount_percentage }}%</td>
           <td>{{ discount.valid_from }}</td>
           <td>{{ discount.valid_until }}</td>
-          <td>{{ discount.status ? 'ACTIVO' : 'INACTIVO' }}</td>
+          <td>{{ discount.status }}</td>
           <td>
             <button
               class="btn btn-warning me-2"
@@ -87,7 +87,9 @@
                   class="form-control"
                   required
                 />
-                <label for="Percentage" class="form-label">Porcentaje de descuento</label>
+                <label for="Percentage" class="form-label"
+                  >Porcentaje de descuento</label
+                >
                 <input
                   type="number"
                   id="Percentage"
@@ -131,7 +133,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { useApi } from "@/composables/use-api";
 import { Modal } from "bootstrap";
 import Swal from "sweetalert2";
 
@@ -162,10 +164,8 @@ export default {
   methods: {
     async fetchDiscounts() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/discounts"
-        );
-        this.discounts = response.data;
+        const response = await useApi("discounts");
+        this.discounts = response;
       } catch (error) {
         console.error("Error fetching discounts", error);
       }
@@ -179,17 +179,14 @@ export default {
     },
     async createDiscount() {
       try {
-        const response = await axios.post(
-          "http://crediservir-api.test/api/discounts",
-          {
-            code: this.Code,
-            discount_percentage: this.Percentage,
-            valid_from: this.ValidFrom,
-            valid_until: this.ValidUntil,
-            status: this.Status,
-          }
-        );
-        this.discounts.push(response.data.discount);
+        const response = await useApi("discounts", "post", {
+          code: this.Code,
+          discount_percentage: this.Percentage,
+          valid_from: this.ValidFrom,
+          valid_until: this.ValidUntil,
+          status: this.Status,
+        });
+        this.discounts.push(response.discount);
         this.closeModal();
         Swal.fire("Éxito", "Código creado con éxito", "success");
       } catch (error) {
@@ -202,7 +199,7 @@ export default {
       this.Percentage = discount.discount_percentage;
       this.ValidFrom = discount.valid_from;
       this.ValidUntil = discount.valid_until;
-      this.Status = discount.status;
+      this.Status = discount.status == 'Activo' ? 1 : 0 ;
       this.isEditing = true;
       this.currentDiscountId = discount.id;
       const modalElement = document.getElementById("discountModal");
@@ -211,8 +208,9 @@ export default {
     },
     async updateDiscount() {
       try {
-        const response = await axios.put(
-          `http://crediservir-api.test/api/discounts/${this.currentDiscountId}`,
+        const response = await useApi(
+          `discounts/${this.currentDiscountId}`,
+          "put",
           {
             code: this.Code,
             discount_percentage: this.Percentage,
@@ -224,12 +222,18 @@ export default {
         const index = this.discounts.findIndex(
           (c) => c.id === this.currentDiscountId
         );
-        this.discounts[index] = response.data.discount;
+        this.discounts[index] = response.discount;
         this.closeModal();
         Swal.fire("Éxito", "Código actualizado con éxito", "success");
       } catch (error) {
-        console.error("Error updating code", error);
-        Swal.fire("Error", "No se pudo actualizar el código", "error");
+        Swal.fire({
+            title: 'Error!',
+            text: error.message,
+            icon: 'error',
+            confirmButtonText: '¡Entendido!'
+        });
+        // console.error("Error updating code", error);
+        // Swal.fire("Error", "No se pudo actualizar el código", "error");
       }
     },
     async deleteDiscount(id) {
@@ -244,7 +248,7 @@ export default {
 
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://crediservir-api.test/api/discounts/${id}`);
+          await useApi(`discounts/${id}`, "delete");
           this.discounts = this.discounts.filter((c) => c.id !== id);
           Swal.fire("Eliminado!", "El código ha sido eliminado.", "success");
         } catch (error) {
@@ -271,27 +275,26 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 900px; 
+  max-width: 900px;
 }
 
 .table {
-  background-color: #ffffff; 
-  border-radius: 0.5rem; 
-  overflow: hidden; 
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .thead-dark th {
-  background-color: #343a40; 
-  color: white; 
+  background-color: #343a40;
+  color: white;
 }
 
 .modal-content {
-  border-radius: 0.5rem; 
+  border-radius: 0.5rem;
 }
 
 .btn {
-  transition: background-color 0.3s ease; 
+  transition: background-color 0.3s ease;
 }
-
 </style>

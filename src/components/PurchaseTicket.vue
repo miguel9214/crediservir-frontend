@@ -125,7 +125,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { useApi } from "@/composables/use-api";
 import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -175,30 +175,27 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/events"
+        const response = await useApi("events"
         );
-        this.events = response.data;
+        this.events = response;
       } catch (error) {
         Swal.fire("Error", "No se pudo cargar los eventos", "error");
       }
     },
     async fetchAttendees() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/attendees"
+        const response = await useApi("attendees"
         );
-        this.attendees = response.data;
+        this.attendees = response;
       } catch (error) {
         Swal.fire("Error", "No se pudo cargar los asistentes", "error");
       }
     },
     async getEventDetails(eventId) {
       try {
-        const response = await axios.get(
-          `http://crediservir-api.test/api/events/${eventId}/details`
+    const response = await useApi(`events/${eventId}/details`
         );
-        this.selectedEvent = response.data;
+        this.selectedEvent = response;
         this.calculateTotal();
       } catch (error) {
         Swal.fire(
@@ -210,10 +207,9 @@ export default {
     },
     async fetchDiscounts() {
       try {
-        const response = await axios.get(
-          "http://crediservir-api.test/api/discounts"
+        const response = await useApi("discounts"
         );
-        this.discounts = response.data;
+        this.discounts = response;
       } catch (error) {
         console.error("Error fetching discounts", error);
       }
@@ -276,16 +272,15 @@ export default {
           ticket_type: this.ticketType,
           discount_codes: this.selectedDiscountIds.map(
             (discountId) =>
-              this.discounts.find((discount) => discount.id === discountId).code
+              this.discounts.find((discount) => discount.id === discountId)
           ),
         };
 
-        const response = await axios.post(
-          `http://crediservir-api.test/api/events/${this.selectedEventId}/purchase`,
+const response = await useApi(`events/${this.selectedEventId}/purchase`,'post',
           payload
         );
 
-        this.purchaseMessage = response.data.message;
+        this.purchaseMessage = response.message;
         await this.generatePDFReceipt(); // Generar el PDF
         Swal.fire("Éxito", this.purchaseMessage, "success");
 

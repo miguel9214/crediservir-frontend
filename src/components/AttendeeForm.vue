@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { useApi } from '@/composables/use-api';
 import Swal from 'sweetalert2';
 import { Modal } from 'bootstrap';
 
@@ -116,8 +116,9 @@ export default {
   methods: {
     async fetchAttendees() {
       try {
-        const response = await axios.get('http://crediservir-api.test/api/attendees');
-        this.attendees = response.data;
+
+        const response = await useApi('attendees');
+        this.attendees = response;
       } catch (error) {
         console.error('Error fetching attendees', error);
       }
@@ -140,8 +141,8 @@ export default {
     },
     async createAttendee() {
       try {
-        const response = await axios.post('http://crediservir-api.test/api/attendees', this.attendeeData);
-        this.attendees.push(response.data.attendee);
+        const response = await useApi('attendees','post', this.attendeeData);
+        this.attendees.push(response.attendee);
         this.closeModal();
         Swal.fire('Éxito', 'Asistente creado con éxito', 'success');
       } catch (error) {
@@ -159,9 +160,9 @@ export default {
     },
     async updateAttendee() {
       try {
-        const response = await axios.put(`http://crediservir-api.test/api/attendees/${this.currentAttendeeId}`, this.attendeeData);
+        const response = await useApi(`attendees/${this.currentAttendeeId}`,'put', this.attendeeData);
         const index = this.attendees.findIndex(a => a.id === this.currentAttendeeId);
-        this.attendees[index] = response.data.attendee;
+        this.attendees[index] = response.attendee;
         this.closeModal();
         Swal.fire('Éxito', 'Asistente actualizado con éxito', 'success');
       } catch (error) {
@@ -181,7 +182,7 @@ export default {
 
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://crediservir-api.test/api/attendees/${id}`);
+          await useApi(`attendees/${id}`, 'delete');
           this.attendees = this.attendees.filter(a => a.id !== id);
           Swal.fire('Eliminado!', 'El asistente ha sido eliminado.', 'success');
         } catch (error) {

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { useApi } from '@/composables/use-api';
 import Swal from 'sweetalert2'; 
 
 export default {
@@ -61,12 +61,12 @@ export default {
   methods: {
     async register() {
       try {
-        const response = await axios.post('http://crediservir-api.test/api/auth/register', {
+        const response = await useApi('auth/register','post', {
           name: this.name,
           email: this.email,
           password: this.password,
         });
-        console.log('Registration successful', response.data);
+        console.log('Registration successful', response);
 
         
         await Swal.fire({
