@@ -31,37 +31,50 @@
         <tbody>
           <tr v-for="(purchase, index) in filteredPurchases" :key="purchase.id">
             <td>{{ index + 1 }}</td>
-            <td>{{ purchase.event.title }}</td>
-            <td>{{ purchase.event.description }}</td>
-            <td>{{ purchase.event.location }}</td>
-            <td>{{ new Date(purchase.event.date).toLocaleDateString() }}</td>
-            <td>{{ purchase.attendee.first_name }} {{ purchase.attendee.last_name }}</td>
-            <td>{{ purchase.attendee.email }}</td>
-            <td>{{ purchase.attendee.phone }}</td>
+            <td>{{ purchase.title }}</td>
+            <td>{{ purchase.description }}</td>
+            <td>{{ purchase.location }}</td>
+            <td>{{ new Date(purchase.date).toLocaleDateString() }}</td>
+            <td>{{ purchase.first_name }} {{ purchase.last_name }}</td>
+            <td>{{ purchase.email }}</td>
+            <td>{{ purchase.phone }}</td>
             <td>{{ purchase.ticket_type }}</td>
-            <td>{{ purchase.price ? parseFloat(purchase.price).toFixed(2) : 'N/A' }} COP</td>
-            <td>{{ purchase.discount_code || 'N/A' }}</td>
+            <td>
+              {{
+                purchase.price ? parseFloat(purchase.price).toFixed(2) : "N/A"
+              }}
+              COP
+            </td>
+            <template v-for="discoin in purchase.discount_code">
+              <span>{{ discoin.code }}</span>
+              <span>{{ discoin.percentaje }}%</span>
+              <span>{{ discoin.amount }}%</span>
+            </template>
             <td>{{ new Date(purchase.purchase_date).toLocaleString() }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div v-if="filteredPurchases.length === 0" class="alert alert-warning mt-3" role="alert">
+    <div
+      v-if="filteredPurchases.length === 0"
+      class="alert alert-warning mt-3"
+      role="alert"
+    >
       No hay compras registradas.
     </div>
   </div>
 </template>
 
 <script>
-import { useApi } from '@/composables/use-api';
-import Swal from 'sweetalert2';
+import { useApi } from "@/composables/use-api";
+import Swal from "sweetalert2";
 
 export default {
   data() {
     return {
       purchases: [],
-      searchQuery: '', 
+      searchQuery: "",
     };
   },
   mounted() {
@@ -70,18 +83,24 @@ export default {
   computed: {
     filteredPurchases() {
       return this.purchases.filter((purchase) =>
-        purchase.ticket_type.toLowerCase().includes(this.searchQuery.toLowerCase())
+        purchase.ticket_type
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase())
       );
     },
   },
   methods: {
     async fetchPurchases() {
       try {
-        const response = await useApi('purchases');
+        const response = await useApi("purchases");
         this.purchases = response;
       } catch (error) {
-        console.error('Error fetching purchases', error);
-        Swal.fire('Error', 'No se pudo cargar el historial de compras', 'error');
+        console.error("Error fetching purchases", error);
+        Swal.fire(
+          "Error",
+          "No se pudo cargar el historial de compras",
+          "error"
+        );
       }
     },
   },
